@@ -101,20 +101,25 @@ def main():
             boxes = result.boxes
             for box in boxes:
                 try:
-                    # Get bounding box coordinates
-                    x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
-                    
                     # Get class name and confidence
                     cls_id = int(box.cls[0].item())
                     conf = float(box.conf[0].item())
+                    
+                    # Skip detections with confidence below threshold
+                    if conf < 0.75:
+                        continue
+                        
+                    # Get bounding box coordinates
+                    x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
                     cls_name = result.names[cls_id]
                     
                     # Calculate depth using the object region
                     object_depth = calculate_object_depth(normalized_depth, x1, y1, x2, y2)
                     
-                    # Apply calibration formula from experimental data
-                    # distance (cm) = 3.1002 * normalized_depth - 0.4657
-                    distance_cm = 3.1002 * object_depth * 100 - 0.4657
+                    # Fix the distance calculation - invert the depth value to correct the relationship
+                    # Lower normalized_depth values = farther objects, higher values = closer objects
+                    # So we use (1 - object_depth) to invert the relationship
+                    distance_cm = 3.1002 * (1 - object_depth) * 100 - 0.4657
                     
                     # Draw bounding box
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
