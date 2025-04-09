@@ -6,11 +6,11 @@ from depth import DepthEngine
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Object detection with depth estimation')
-    parser.add_argument('--video', type=str, default='0', help='Path to video file or camera index')
+    parser.add_argument('--video', type=str, default='/home/orin/Test/Test_Model/AriaEverydayActivities_1.0.0_loc5_script4_seq6_rec1_preview_rgb.mp4', help='Path to video file or camera index')
     parser.add_argument('--yolo-model', type=str, default='yolo11n.pt', help='Path to YOLO model')
-    parser.add_argument('--depth-model', type=str, default='weights/depth_anything_vits14_308.trt', 
+    parser.add_argument('--depth-model', type=str, default='weights/depth_anything_vits14_406_dla0.trt', 
                         help='Path to depth model TRT engine')
-    parser.add_argument('--input-size', type=int, default=308, help='Input size for depth model')
+    parser.add_argument('--input-size', type=int, default=406, help='Input size for depth model')
     parser.add_argument('--save-path', type=str, default=None, help='Path to save results')
     return parser.parse_args()
 
